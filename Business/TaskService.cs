@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using NTierTodoApp.DataAccess;
 using NTierTodoApp.Models;
 
 namespace NTierTodoApp.Business
 {
     /// <summary>
-    /// طبقة المنطق التجاري لإدارة المهام.
+    /// طبقة المنطق التجاري لإدارة المهام
     /// </summary>
     public class TaskService
     {
@@ -36,10 +37,9 @@ namespace NTierTodoApp.Business
                 task.IsComplete = true;
         }
 
-        // TODO: تنفيذ دالة حذف المهمة
         public void DeleteTask(int id)
         {
-            // TODO: استدعاء دالة الحذف في طبقة DataAccess
+            repository.Delete(id);
         }
     }
 }

@@ -1,38 +1,170 @@
-﻿@model List<NTierTodoApp.Models.TaskItem>
+﻿@model List<MvcTodoApp.Models.TaskItem>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>إدارة المهام – n-tier</title>
+    <title>قائمة المهام </title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 40px;
+        }
+
+        h2, h4 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #615f5f;
+            color: white;
+        }
+
+        form {
+            display: flex;
+            gap: 8px;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            width: 100%;
+            max-width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-edit {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .btn-complete {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .btn-add {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .status.done {
+            color: green;
+        }
+
+        .status.not-done {
+            color: red;
+        }
+
+        .task-form {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>قائمة المهام (n-tier)</h1>
-    <ul>
-        @foreach (var task in Model)
-        {
-            <li>
-                @if(task.IsComplete)
-                {
-                    <s>@task.Title</s>
-                }
-                else
-                {
-                    @task.Title
-                    <form method="post" asp-action="CompleteTask" style="display:inline;">
-                        <input type="hidden" name="id" value="@task.Id" />
-                        <button type="submit">اكتملت</button>
-                    </form>
-                }
 
-                <!-- TODO: إضافة زر حذف المهمة -->
-            </li>
-        }
-    </ul>
+<h2>
+    <img src="~/images/to-do-list.png" alt="قائمة المهام" style="width:32px; vertical-align:middle; margin-right:8px;" />
+    قائمة المهام
+</h2>
 
-    <form method="post" asp-action="AddTask">
-        <input type="text" name="title" placeholder="أضف مهمة جديدة" />
-        <button type="submit">إضافة</button>
-    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>العنوان</th>
+                <th>مكتملة؟</th>
+                <th>تعديل</th>
+                <th>اكتمال</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                <tr>
+                    <td>@task.Title</td>
+<td class="status @(task.IsComplete ? "done" : "not-done")">
+    @if (task.IsComplete)
+    {
+        <span class="icon">
+            <img src="@Url.Content("~/images/accept.png")" alt="مكتملة" style="width:18px; vertical-align:middle; margin-right:4px;" />
+            نعم
+        </span>
+        
+    }
+    else
+    {
+        <span class="icon">
+            <img src="@Url.Content("~/images/delete.png")" alt="غير مكتملة" style="width:18px; vertical-align:middle; margin-right:4px;" />
+            لا
+        </span>
+        
+    }
+</td>
+
+                    <!-- تعديل -->
+                    <td>
+                        <form asp-action="EditTask" method="post">
+                            <input type="hidden" name="id" value="@task.Id" />
+                            <input type="text" name="newTitle" value="@task.Title" />
+                            <button type="submit" class="btn-edit">تعديل</button>
+                        </form>
+                    </td>
+
+                    <!-- اكتمال -->
+                    <td>
+                        @if (!task.IsComplete)
+                        {
+                            <form asp-action="CompleteTask" method="post">
+                                <input type="hidden" name="id" value="@task.Id" />
+                                <button type="submit" class="btn-complete">إنهاء</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="status done">تم</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="task-form">
+    <h4>
+    <img src="~/images/plus.png" alt="قائمة المهام" style="width:24px; vertical-align:middle; margin-right:8px;" />
+    اضافة مهمة جديدة
+</h4>
+        <form asp-action="AddTask" method="post">
+            <input type="text" name="title" placeholder="عنوان المهمة" />
+            <button type="submit" class="btn-add">إضافة</button>
+        </form>
+    </div>
+
 </body>
 </html>
